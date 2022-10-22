@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kros6/models/Krosmaster.dart';
+import 'package:kros6/models/krosmaster.dart';
+import 'package:kros6/models/team.dart';
 
 void main() {
   runApp(const App());
@@ -15,8 +16,8 @@ class App extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  final times = [
-    Time(krosmasters: [
+  final teams = [
+    Team(krosmasters: [
       Krosmaster(
           id: "gasper-feyto",
           name: "Gasper Feyto",
@@ -58,7 +59,7 @@ class HomePage extends StatelessWidget {
           unique: Unique.gold,
           isBoss: false),
     ]),
-    Time(krosmasters: [
+    Team(krosmasters: [
       Krosmaster(
           id: "thio",
           name: "Thio",
@@ -121,7 +122,7 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 )),
-            ...times.map((time) {
+            ...teams.map((team) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
@@ -140,13 +141,13 @@ class HomePage extends StatelessWidget {
                                 Shadow(color: Colors.black, blurRadius: 10)
                               ],
                             ),
-                            Text(time.getInitiative().toString(),
+                            Text(team.getInitiative().toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),
-                      ...time.krosmasters.map((krosmaster) {
+                      ...team.krosmasters.map((krosmaster) {
                         return ListView(
                           shrinkWrap: true,
                           children: [

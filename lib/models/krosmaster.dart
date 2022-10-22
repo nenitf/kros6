@@ -18,14 +18,3 @@ class Krosmaster {
       required this.unique,
       required this.isBoss});
 }
-
-class Time {
-  final List<Krosmaster> krosmasters;
-  /* final String initiative; */
-
-  Time({required this.krosmasters});
-
-  num getInitiative() {
-    return 10;
-  }
-}
