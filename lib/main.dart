@@ -122,42 +122,39 @@ class HomePage extends StatelessWidget {
                   ),
                 )),
             ...times.map((time) {
-              return Container(
-                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    color: Colors.black,
-                    width: 2,
-                  )),
-                  child: Column(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.bolt,
-                            color: Colors.yellow,
-                            size: 24.0,
-                            shadows: [
-                              Shadow(color: Colors.black, blurRadius: 10)
-                            ],
-                          ),
-                          Text(time.getInitiative().toString(),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                        ],
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.bolt,
+                              color: Colors.yellow,
+                              size: 24.0,
+                              shadows: [
+                                Shadow(color: Colors.black, blurRadius: 10)
+                              ],
+                            ),
+                            Text(time.getInitiative().toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
-                    ),
-                    ...time.krosmasters.map((krosmaster) {
-                      return Card(
-                          child: Row(
-                        children: [
-                          Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
+                      ...time.krosmasters.map((krosmaster) {
+                        return ListView(
+                          shrinkWrap: true,
+                          children: [
+                            ListTile(
+                              /* leading: Icon(Icons.map), */
+                              title: Text(krosmaster.name),
+                              subtitle: Row(
                                 children: [
-                                  Text(krosmaster.name),
                                   const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -171,11 +168,13 @@ class HomePage extends StatelessWidget {
                                   ),
                                   Text(krosmaster.initiative.toString()),
                                 ],
-                              )),
-                        ],
-                      ));
-                    }).toList()
-                  ]));
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ])),
+              );
             })
           ]),
         ));
