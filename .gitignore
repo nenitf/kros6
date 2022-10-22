@@ -10,6 +10,8 @@
 .svn/
 migrate_working_dir/
 
+flutter_*.json
+
 # IntelliJ related
 *.iml
 *.ipr
