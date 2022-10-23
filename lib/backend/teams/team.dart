@@ -1,4 +1,4 @@
-import 'package:kros6/models/krosmaster.dart';
+import 'package:kros6/backend/krosmasters/krosmaster.dart';
 
 class Team {
   final List<Krosmaster> krosmasters;
