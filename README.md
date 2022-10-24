@@ -7,7 +7,7 @@ flutter run
 
 ```sh
 flutter test
-flutter test test/team_test.dart
+flutter test test_backend/teams/create_test.dart
 ```
 
 <!-- https://www.fgbradleys.com/rules/rules3/KrosmasterArenaRules.pdf -->

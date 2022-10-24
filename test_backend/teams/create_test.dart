@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kros6/models/team.dart';
+import 'package:kros6/backend/teams/create.dart';
 
 void main() {
   test("has 12 gg", () {
@@ -11,5 +11,4 @@ void main() {
 
     expect(ggs, 12);
   });
-
 }
