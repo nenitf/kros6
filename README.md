@@ -36,6 +36,11 @@ flutter test test_backend/teams/create_test.dartread
 
 > Dica: utilize [gon](https://github.com/nenitf/gon) e teste com ``gon -c flutter test``
 
+### Organização/dependência de arquivos
+
+- `lib/backend`: lógica que foge da responsabilidade da camada de apresentação, cujo poderia estar em uma api
+- `lib/api`: cliente do "backend", desconhecendo qualquer regra de negócio
+
 ## Links interessantes
 
 - [Regras](https://www.fgbradleys.com/rules/rules3/KrosmasterArenaRules.pdf) Krosmaster 1.0
