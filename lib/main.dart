@@ -117,7 +117,9 @@ class HomePage extends StatelessWidget {
                       ),
                       TextButton(
                         child: const Text('Criar'),
-                        onPressed: () {},
+                        onPressed: () {
+                          debugPrint("AA");
+                        },
                       )
                     ],
                   ),

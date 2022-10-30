@@ -31,7 +31,7 @@ flutter test
 - Testes específicos
 
 ```sh
-flutter test test_backend/teams/create_test.dartread
+flutter test test_backend/teams/create_test.dart
 ```
 
 > Dica: utilize [gon](https://github.com/nenitf/gon) e teste com ``gon -c flutter test``
