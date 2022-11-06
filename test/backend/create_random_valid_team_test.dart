@@ -10,7 +10,7 @@ import 'create_random_valid_team_test.mocks.dart';
 import 'fixtures/krosmasters.dart';
 
 void main() {
-  group("valid team on first try", () {
+  group("a sufficient krosmaster collection", () {
     final dataProvider = [
       [
         krosmaster("gasper feyto"),
@@ -99,12 +99,38 @@ void main() {
     ];
 
     dataProvider.asMap().forEach((i, shuffledKrosmasters) {
-      test("generates a team (#$i)", () {
+      test("generates one team (#$i)", () {
         final repo = MockKrosmasterRepository();
         when(repo.allAvailable()).thenReturn(shuffledKrosmasters);
-        var sut = CreateRandomTeam(CreateTeam(), repo);
-        var team = sut.execute();
-        expect(team, isA<Team>());
+        var sut = CreateRandomTeams(CreateTeam(), repo);
+        var team = sut.execute(1);
+        expect(team, isA<List<Team>>());
+        expect(team.length, 1);
+      });
+    });
+
+    final dataProvider2 = [
+      [
+        krosmaster("gasper feyto"),
+        krosmaster("otomai"),
+        krosmaster("barden tadura"),
+        krosmaster("steamy wonder"),
+        krosmaster("day kiri"),
+        krosmaster("thio"),
+        krosmaster("henual"),
+        krosmaster("deminobola"),
+        krosmaster("diver birel"),
+      ],
+    ];
+
+    dataProvider2.asMap().forEach((i, shuffledKrosmasters) {
+      test("generates two teams (#$i)", () {
+        final repo = MockKrosmasterRepository();
+        when(repo.allAvailable()).thenReturn(shuffledKrosmasters);
+        var sut = CreateRandomTeams(CreateTeam(), repo);
+        var team = sut.execute(2);
+        expect(team, isA<List<Team>>());
+        expect(team.length, 2);
       });
     });
   });

@@ -6,15 +6,38 @@ abstract class KrosmasterRepository {
   List<Krosmaster> allAvailable();
 }
 
-class CreateRandomTeam {
+class CreateRandomTeams {
   final CreateTeam createService;
   final KrosmasterRepository krosmasterRepository;
 
-  CreateRandomTeam(this.createService, this.krosmasterRepository);
+  CreateRandomTeams(this.createService, this.krosmasterRepository);
 
-  Team execute() {
-    final team = _try(50);
+  List<Team> execute(int totalTeams) {
+    final team = _try(totalTeams, 50);
     return team;
+  }
+
+  List<Team> _createTeams(
+      int totalTeams, List<Krosmaster> availableKrosmastersShuffled) {
+    final teams = [
+      _createTeam(availableKrosmastersShuffled),
+    ];
+
+    if (totalTeams > 1) {
+      final krosmastersUnavailable =
+          teams[0].krosmasters.fold<List<String>>([], (ids, krosmaster) {
+        ids.add(krosmaster.id);
+        return ids;
+      });
+      availableKrosmastersShuffled.removeWhere(
+          (krosmaster) => krosmastersUnavailable.contains(krosmaster.id));
+      _createTeams(totalTeams - 1, availableKrosmastersShuffled)
+          .forEach((team) {
+        teams.add(team);
+      });
+    }
+
+    return teams;
   }
 
   Team _createTeam(List<Krosmaster> availableKrosmastersShuffled) {
@@ -86,19 +109,19 @@ class CreateRandomTeam {
     return team;
   }
 
-  Team _try(int tries) {
+  List<Team> _try(int totalTeams, int tries) {
     final allKrosmastersShuffled = krosmasterRepository.allAvailable();
     allKrosmastersShuffled.shuffle();
 
     try {
-      final team = _createTeam(allKrosmastersShuffled);
-      return team;
+      return _createTeams(totalTeams, allKrosmastersShuffled);
     } catch (e) {
       if (tries < 1) {
         throw NotAbleToCreateTeamException;
       }
 
-      return _try(tries - 1);
+      allKrosmastersShuffled.shuffle();
+      return _try(totalTeams, tries - 1);
     }
   }
 }
