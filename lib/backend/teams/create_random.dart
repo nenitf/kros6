@@ -10,20 +10,16 @@ class CreateRandomTeam {
   final CreateTeam createService;
   final KrosmasterRepository krosmasterRepository;
 
-  CreateRandomTeam(
-      this.createService, this.krosmasterRepository);
+  CreateRandomTeam(this.createService, this.krosmasterRepository);
 
   Team execute() {
     final team = _try(50);
     return team;
   }
 
-  Team _try(int tries) {
-    final allKrosmastersShuffled = krosmasterRepository.allAvailable();
-    allKrosmastersShuffled.shuffle();
-
-    var selectedKrosmasters =
-        allKrosmastersShuffled.fold<List<Krosmaster>>([], (team, krosmaster) {
+  Team _createTeam(List<Krosmaster> availableKrosmastersShuffled) {
+    var selectedKrosmasters = availableKrosmastersShuffled
+        .fold<List<Krosmaster>>([], (team, krosmaster) {
       final teamAlreadyHasA6Level = team.length == 1 && team[0].level == 6;
       if (teamAlreadyHasA6Level && krosmaster.level == 6) {
         return team;
@@ -86,8 +82,16 @@ class CreateRandomTeam {
       return team;
     });
 
+    final team = createService.execute(selectedKrosmasters);
+    return team;
+  }
+
+  Team _try(int tries) {
+    final allKrosmastersShuffled = krosmasterRepository.allAvailable();
+    allKrosmastersShuffled.shuffle();
+
     try {
-      final team = createService.execute(selectedKrosmasters);
+      final team = _createTeam(allKrosmastersShuffled);
       return team;
     } catch (e) {
       if (tries < 1) {
