@@ -6,12 +6,11 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 @GenerateMocks([KrosmasterRepository])
-@GenerateMocks([ShuffleService])
-import 'create_random_valid_test.mocks.dart';
+import 'create_random_valid_team_test.mocks.dart';
 import 'fixtures/krosmasters.dart';
 
 void main() {
-  group("valid team", () {
+  group("valid team on first try", () {
     final dataProvider = [
       [
         krosmaster("gasper feyto"),
@@ -86,16 +85,24 @@ void main() {
         krosmaster("deminobola"),
         krosmaster("deminobola"),
       ],
+      [
+        krosmaster("riktus de brakmar"),
+        krosmaster("riktus de brakmar"),
+        krosmaster("riktus de brakmar"),
+        krosmaster("henual"),
+        krosmaster("jeyro rello"),
+        krosmaster("day kiri"),
+        krosmaster("steamy wonder"),
+        krosmaster("barden tadura"),
+        krosmaster("diver birel"),
+      ],
     ];
 
     dataProvider.asMap().forEach((i, shuffledKrosmasters) {
       test("generates a team (#$i)", () {
         final repo = MockKrosmasterRepository();
         when(repo.allAvailable()).thenReturn(shuffledKrosmasters);
-        final shuffle = MockShuffleService();
-        when(shuffle.execute(shuffledKrosmasters))
-            .thenReturn(shuffledKrosmasters);
-        var sut = CreateRandomTeam(CreateTeam(), repo, shuffle);
+        var sut = CreateRandomTeam(CreateTeam(), repo);
         var team = sut.execute();
         expect(team, isA<Team>());
       });

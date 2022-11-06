@@ -6,21 +6,21 @@ abstract class KrosmasterRepository {
   List<Krosmaster> allAvailable();
 }
 
-abstract class ShuffleService {
-  List<T> execute<T>(List<T> items);
-}
-
 class CreateRandomTeam {
   final CreateTeam createService;
   final KrosmasterRepository krosmasterRepository;
-  final ShuffleService shuffleService;
 
   CreateRandomTeam(
-      this.createService, this.krosmasterRepository, this.shuffleService);
+      this.createService, this.krosmasterRepository);
 
   Team execute() {
-    final allKrosmastersShuffled =
-        shuffleService.execute<Krosmaster>(krosmasterRepository.allAvailable());
+    final team = _try(50);
+    return team;
+  }
+
+  Team _try(int tries) {
+    final allKrosmastersShuffled = krosmasterRepository.allAvailable();
+    allKrosmastersShuffled.shuffle();
 
     var selectedKrosmasters =
         allKrosmastersShuffled.fold<List<Krosmaster>>([], (team, krosmaster) {
@@ -86,8 +86,20 @@ class CreateRandomTeam {
       return team;
     });
 
-    final team = createService.execute(selectedKrosmasters);
+    try {
+      final team = createService.execute(selectedKrosmasters);
+      return team;
+    } catch (e) {
+      if (tries < 1) {
+        throw NotAbleToCreateTeamException;
+      }
 
-    return team;
+      return _try(tries - 1);
+    }
   }
+}
+
+class NotAbleToCreateTeamException implements Exception {
+  @override
+  String toString() => 'Not able to create a team';
 }
