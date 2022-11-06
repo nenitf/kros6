@@ -1,163 +1,93 @@
+import 'package:kros6/backend/teams/create.dart';
 import 'package:kros6/backend/teams/team.dart';
 import 'package:kros6/backend/krosmasters/krosmaster.dart';
 
-abstract class KrosmasterRespository {
-  List<Krosmaster> all();
+abstract class KrosmasterRepository {
+  List<Krosmaster> allAvailable();
+}
 
-  /* List<Krosmaster> all() { */
-  /*   return [ */
-  /*     Krosmaster( */
-  /*         id: "thio", */
-  /*         name: "Thio", */
-  /*         level: 4, */
-  /*         appearance: "a", */
-  /*         initiative: 10, */
-  /*         unique: Unique.gold, */
-  /*         isBoss: false), */
-  /*     Krosmaster( */
-  /*         id: "henual", */
-  /*         name: "Henual", */
-  /*         level: 2, */
-  /*         appearance: "a", */
-  /*         initiative: 6, */
-  /*         unique: Unique.white, */
-  /*         isBoss: false), */
-  /*     Krosmaster( */
-  /*         id: "deminobola", */
-  /*         name: "Deminobola", */
-  /*         level: 3, */
-  /*         appearance: "a", */
-  /*         initiative: 7, */
-  /*         unique: Unique.white, */
-  /*         isBoss: false), */
-  /*     Krosmaster( */
-  /*         id: "diver-birel", */
-  /*         name: "Diver Briel", */
-  /*         level: 3, */
-  /*         appearance: "a", */
-  /*         initiative: 6, */
-  /*         unique: Unique.white, */
-  /*         isBoss: false) */
-  /*       ]; */
-  /* } */
+abstract class ShuffleService {
+  List<T> execute<T>(List<T> items);
 }
 
 class CreateRandomTeam {
   final CreateTeam createService;
-  final KrosmasterRespository krosmasterRepository;
+  final KrosmasterRepository krosmasterRepository;
+  final ShuffleService shuffleService;
 
-  CreateRandomTeam(this.createService, this.krosmasterRepository);
+  CreateRandomTeam(
+      this.createService, this.krosmasterRepository, this.shuffleService);
 
   Team execute() {
-    final allKrosmasters = krosmasterRepository.all();
-    /* const allKrosmastersShuffled = this.shuffleService<List<Krosmaster>>.execute(allKrosmasters); */
+    final allKrosmastersShuffled =
+        shuffleService.execute<Krosmaster>(krosmasterRepository.allAvailable());
 
-    final team = createService.execute(allKrosmasters);
+    var selectedKrosmasters =
+        allKrosmastersShuffled.fold<List<Krosmaster>>([], (team, krosmaster) {
+      final teamAlreadyHasA6Level = team.length == 1 && team[0].level == 6;
+      if (teamAlreadyHasA6Level && krosmaster.level == 6) {
+        return team;
+      }
+
+      final bosses = team.where((k) => k.isBoss).length;
+      if (bosses > 0 && krosmaster.isBoss) {
+        return team;
+      }
+
+      var totalGgs =
+          team.fold<num>(0, (ggs, krosmaster) => ggs + krosmaster.level);
+
+      final levelDenied = krosmaster.level + totalGgs > 12;
+      if (levelDenied) {
+        return team;
+      }
+
+      final teamNeedsCompleteLastKrosmaster = team.length == 6;
+      if (teamNeedsCompleteLastKrosmaster &&
+          krosmaster.level != (12 - totalGgs)) {
+        return team;
+      }
+
+      switch (krosmaster.unique) {
+        case Unique.gold:
+          {
+            final alreadyHasThisKrosmasterOnce =
+                team.any((k) => k.id == krosmaster.id);
+            if (alreadyHasThisKrosmasterOnce) {
+              return team;
+            }
+            break;
+          }
+        case Unique.white:
+          {
+            final totalWhites = team
+                .where((k) => k.unique == Unique.white)
+                .where((k) => k.id == krosmaster.id)
+                .length;
+            if (totalWhites + 1 > 2) {
+              return team;
+            }
+            break;
+          }
+        case Unique.black:
+          {
+            final totalBlacks = team
+                .where((k) => k.unique == Unique.black)
+                .where((k) => k.id == krosmaster.id)
+                .length;
+            if (totalBlacks + 1 > 3) {
+              return team;
+            }
+            break;
+          }
+      }
+
+      team.add(krosmaster);
+      return team;
+    });
+
+    final team = createService.execute(selectedKrosmasters);
+
     return team;
-    /* return Team(krosmasters: allKrosmasters); */
-
-    // validar gg
-    // validar is boss
-    // validar gold
-    // validar white
-    // validar black
   }
-}
-
-class CreateTeam {
-  Team execute(List<Krosmaster> krosmasters) {
-    var ggs = krosmasters.fold<num>(0, (ggs, krosmaster) {
-        return ggs + krosmaster.level;
-        });
-
-    if (ggs != 12) {
-      throw GGException();
-    }
-
-    var bosses = krosmasters.fold<num>(0, (bosses, krosmaster) {
-        if (krosmaster.isBoss) {
-        bosses++;
-        }
-
-        return bosses;
-        });
-
-    if (bosses > 1) {
-      throw ExceededBossLimitException();
-    }
-
-    if (ggs != 12) {
-      throw GGException();
-    }
-
-    krosmasters
-      .where((krosmaster) => krosmaster.unique == Unique.gold)
-      .fold<Map>({}, (map, krosmaster) {
-          if (map.containsKey(krosmaster.id)) {
-          throw ExceededUniqueGoldLimitException();
-          }
-          map[krosmaster.id] = krosmaster.id;
-          return map;
-          });
-
-    krosmasters
-      .where((krosmaster) => krosmaster.unique == Unique.white)
-      .fold<Map>({}, (map, krosmaster) {
-          if (!map.containsKey(krosmaster.id)) {
-          map[krosmaster.id] = 1;
-          }
-
-          var count = map[krosmaster.id] += 1;
-
-          if (count > 2) {
-          throw ExceededUniqueWhiteLimitException();
-          }
-
-          return map;
-          });
-
-    krosmasters
-      .where((krosmaster) => krosmaster.unique == Unique.black)
-      .fold<Map>({}, (map, krosmaster) {
-          if (!map.containsKey(krosmaster.id)) {
-          map[krosmaster.id] = 1;
-          return map;
-          }
-
-          var count = map[krosmaster.id] += 1;
-
-          if (count > 3) {
-          throw ExceededUniqueBlackLimitException();
-          }
-
-          return map;
-          });
-
-    return Team(krosmasters: krosmasters);
-  }
-}
-
-class GGException implements Exception {
-  @override
-    String toString() => 'Team must have 12 ggs';
-}
-
-class ExceededBossLimitException implements Exception {
-  @override
-    String toString() => 'Team must have at most 1 boss';
-}
-
-class ExceededUniqueGoldLimitException implements Exception {
-  @override
-    String toString() => 'Team must not have repeated gold krosmasters';
-}
-
-class ExceededUniqueWhiteLimitException implements Exception {
-  @override
-    String toString() => 'Team must have at most 2 repeated white krosmasters';
-}
-
-class ExceededUniqueBlackLimitException implements Exception {
-  @override
-    String toString() => 'Team must have at most 3 repeated black krosmasters';
 }

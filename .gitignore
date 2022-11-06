@@ -1,5 +1,7 @@
 # Miscellaneous
 *.class
+*.mocks.dart
+*.class
 *.log
 *.pyc
 *.swp

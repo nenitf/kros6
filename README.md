@@ -12,7 +12,11 @@ Aplicativo para criar times aleatórios de [Krosmaster](http://www.krosmaster.co
 
 ## Desenvolvimento
 
-<!-- ### Ambiente -->
+### Ambiente
+
+```sh
+flutter pub get
+```
 
 ### Execução
 
@@ -23,6 +27,8 @@ flutter run
 
 ### Testes
 
+> Gere os mocks com ``flutter pub run build_runner build``
+
 - CI
 ```sh
 flutter test
@@ -31,7 +37,7 @@ flutter test
 - Testes específicos
 
 ```sh
-flutter test test_backend/teams/create_test.dart
+flutter test test/backend/create_random_valid_team_test.dart
 ```
 
 > Dica: utilize [gon](https://github.com/nenitf/gon) e teste com ``gon -c flutter test``
