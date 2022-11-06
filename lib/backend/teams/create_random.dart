@@ -19,23 +19,17 @@ class CreateRandomTeams {
 
   List<Team> _createTeams(
       int totalTeams, List<Krosmaster> availableKrosmastersShuffled) {
-    final teams = [
-      _createTeam(availableKrosmastersShuffled),
-    ];
+    final teams = List.generate(totalTeams, (i) => i).map<Team>((i) {
+      final team = _createTeam(availableKrosmastersShuffled);
 
-    if (totalTeams > 1) {
-      final krosmastersUnavailable =
-          teams[0].krosmasters.fold<List<String>>([], (ids, krosmaster) {
-        ids.add(krosmaster.id);
-        return ids;
+      final krosmastersUnavailable = team.krosmasters.map<String>((krosmaster) {
+        return krosmaster.id;
       });
+
       availableKrosmastersShuffled.removeWhere(
           (krosmaster) => krosmastersUnavailable.contains(krosmaster.id));
-      _createTeams(totalTeams - 1, availableKrosmastersShuffled)
-          .forEach((team) {
-        teams.add(team);
-      });
-    }
+      return team;
+    }).toList();
 
     return teams;
   }
