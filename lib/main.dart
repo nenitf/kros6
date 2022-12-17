@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ...team.krosmasters.map((krosmaster) {
                         return ListView(
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           children: [
                             ListTile(
