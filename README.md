@@ -25,6 +25,15 @@ flutter run
 ```
 > Use <kbd>r</kbd> ou <kbd>R</kbd> para recarregar o app
 
+#### USB debug
+
+- Caso ``flutter devices`` e ``adb devices`` aponte que o celular não possui autorização tente os comandos abaixo, desabilite o debug no celular e habilite novamente
+
+```sh
+adb kill-server
+adb start-server
+```
+
 ### Testes
 
 > Gere os mocks com ``flutter pub run build_runner build``
