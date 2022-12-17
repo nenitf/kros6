@@ -4,6 +4,8 @@
 
 Aplicativo para criar times aleatórios de [Krosmaster](http://www.krosmaster.com/)
 
+![screenshot](/assets/demo.png)
+
 <!-- ## Utilização -->
 
 <!-- 1. Baixe o app pela [Play Store]() ou pela [release]()-->
