@@ -2,11 +2,7 @@ import 'package:kros6/models/krosmaster.dart';
 
 class Team {
   final List<Krosmaster> krosmasters;
-  /* final String initiative; */
+  num initiative;
 
-  Team({required this.krosmasters});
-
-  num getInitiative() {
-    return 10;
-  }
+  Team({required this.krosmasters}): initiative = krosmasters.fold<num>(0, (acc, krosmaster) => acc + krosmaster.initiative);
 }

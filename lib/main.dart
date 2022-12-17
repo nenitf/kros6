@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kros6/models/krosmaster.dart';
 import 'package:kros6/models/team.dart';
 
+import 'api/teams/client.dart';
+
 void main() {
   runApp(const App());
 }
@@ -15,94 +17,28 @@ class App extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  final teams = [
-    Team(krosmasters: [
-      Krosmaster(
-          id: "gasper-feyto",
-          name: "Gasper Feyto",
-          level: 3,
-          appearance: "a",
-          initiative: 3,
-          unique: Unique.gold,
-          isBoss: false),
-      Krosmaster(
-          id: "otomai",
-          name: "Otomai",
-          level: 6,
-          appearance: "a",
-          initiative: 0,
-          unique: Unique.gold,
-          isBoss: false),
-      Krosmaster(
-          id: "barden-tadura",
-          name: "Steamy Wonder ",
-          level: 1,
-          appearance: "a",
-          initiative: 0,
-          unique: Unique.gold,
-          isBoss: false),
-      Krosmaster(
-          id: "barden-tadura",
-          name: "Barden Tadura",
-          level: 1,
-          appearance: "a",
-          initiative: 3,
-          unique: Unique.white,
-          isBoss: false),
-      Krosmaster(
-          id: "day-kiri",
-          name: "Day Kiri",
-          level: 1,
-          appearance: "a",
-          initiative: 0,
-          unique: Unique.gold,
-          isBoss: false),
-    ]),
-    Team(krosmasters: [
-      Krosmaster(
-          id: "thio",
-          name: "Thio",
-          level: 4,
-          appearance: "a",
-          initiative: 10,
-          unique: Unique.gold,
-          isBoss: false),
-      Krosmaster(
-          id: "henual",
-          name: "Henual",
-          level: 2,
-          appearance: "a",
-          initiative: 6,
-          unique: Unique.white,
-          isBoss: false),
-      Krosmaster(
-          id: "deminobola",
-          name: "Deminobola",
-          level: 3,
-          appearance: "a",
-          initiative: 7,
-          unique: Unique.white,
-          isBoss: false),
-      Krosmaster(
-          id: "diver-birel",
-          name: "Diver Briel",
-          level: 3,
-          appearance: "a",
-          initiative: 6,
-          unique: Unique.white,
-          isBoss: false)
-    ]),
-  ];
-
+class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var teams = [];
+
+  void setTeams(List<Team> teams) {
+    setState(() {
+      this.teams = teams;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(widget.title)),
         body: SingleChildScrollView(
           child: Column(children: <Widget>[
             Card(
@@ -113,12 +49,14 @@ class HomePage extends StatelessWidget {
                     children: [
                       const TextField(
                         decoration:
-                            InputDecoration(labelText: "Quantidade de times"),
+                            InputDecoration(labelText: "Quantidade de times: 2"),
+                            enabled: false,
                       ),
                       TextButton(
                         child: const Text('Criar'),
                         onPressed: () {
-                          debugPrint("AA");
+                          final teams = Client().create(2);
+                          setTeams(teams);
                         },
                       )
                     ],
@@ -143,7 +81,7 @@ class HomePage extends StatelessWidget {
                                 Shadow(color: Colors.black, blurRadius: 10)
                               ],
                             ),
-                            Text(team.getInitiative().toString(),
+                            Text(team.initiative.toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
                           ],
@@ -154,7 +92,6 @@ class HomePage extends StatelessWidget {
                           shrinkWrap: true,
                           children: [
                             ListTile(
-                              /* leading: Icon(Icons.map), */
                               title: Text(krosmaster.name),
                               subtitle: Row(
                                 children: [
