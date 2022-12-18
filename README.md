@@ -4,13 +4,14 @@
 
 Aplicativo para criar times aleatórios de [Krosmaster](http://www.krosmaster.com/)
 
+## Utilização
+
+1. Clone o projeto
+2. Gere o build com ``flutter run --release``. Siga as instruções de [debug via usb](#usbdebug) para instruções adicionais.
+
 ![screenshot](/assets/demo.png)
 
-<!-- ## Utilização -->
-
 <!-- 1. Baixe o app pela [Play Store]() ou pela [release]()-->
-<!-- 2. Gere o time  -->
-<!-- Print -->
 
 ## Desenvolvimento
 
@@ -27,7 +28,7 @@ flutter run
 ```
 > Use <kbd>r</kbd> ou <kbd>R</kbd> para recarregar o app
 
-#### USB debug
+#### <a name="usbdebug"></a> USB debug
 
 - Caso ``flutter devices`` e ``adb devices`` aponte que o celular não possui autorização tente os comandos abaixo, desabilite o debug no celular e habilite novamente
 
